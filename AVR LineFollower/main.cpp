@@ -222,3 +222,57 @@ void readsens()
 	sensor_values[7]=READ(B,5);
 }
 
+float KP = 3 ,KI = 50000 , KD = 16/1;
+int   integral  = 0;
+int   last_proportional = 0;
+
+void followPID()
+{
+    int position = read_line();
+
+    int center = (( (num_sensor - 1) * 1000) / 2);
+
+    int proportional = position - center;
+
+    int derivative = proportional - last_proportional;
+
+    int power_difference = proportional / KP + integral / KI + derivative * KD;
+    last_proportional    = proportional;
+    integral  += proportional;
+
+
+    const int max = 200;
+    const int max_diffrence = 20;
+    const int factor_diffrence = 2;
+
+    if(power_difference > max)
+        power_difference = max;
+    if(power_difference < -max)
+        power_difference = -max;
+
+    
+    // if diffrence is too much robot skids 
+
+    int leftMotorSpeed  = max;
+    int rightMotorSpeed = max-power_difference;
+
+    if(power_difference < 0)
+    {
+        leftMotorSpeed  = max+power_difference;
+        rightMotorSpeed = max;
+    }
+
+
+    if(leftMotorSpeed - rightMotorSpeed > max_diffrence)
+    {
+        leftMotorSpeed -= (leftMotorSpeed - rightMotorSpeed)/factor_diffrence;
+    } 
+    else if(rightMotorSpeed - leftMotorSpeed > max_diffrence)
+    {
+        rightMotorSpeed -= (rightMotorSpeed - leftMotorSpeed)/factor_diffrence;
+    }
+
+    motors(leftMotorSpeed,rightMotorSpeed);
+
+}
+
