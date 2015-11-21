@@ -72,3 +72,132 @@ void motors(int leftMotorSpeed, int rightMotorSpeed)
     }
 }
 
+int read_line()
+{
+	unsigned char i, on_line = 0;
+	unsigned long avg; // this is for the weighted total, which is long before division
+	unsigned int sum; // this is for the denominator which is <= 64000
+	static int last_value=0; // assume initially that the line is left.
+
+	readsens();
+
+	avg = 0;
+	sum = 0;
+  
+	for(i=0;i<num_sensor;i++) 
+	{
+		int value = sensor_values[i];
+		
+		// keep track of whether we see the line at all
+		if(value > 200) 
+		{
+			on_line = 1;
+		}
+		
+		// only average in values that are above a noise threshold
+		if(value > 50) 
+		{
+			avg += (long)(value) * (i * 1000);
+			sum += value;
+		}
+	}
+
+	if(!on_line)
+	{
+		// If it last read to the left of center, return 0.
+		if(last_value < (num_sensor-1)*1000/2)
+			return 0;
+		
+		// If it last read to the right of center, return the max.
+		else
+			return (num_sensor-1)*1000;
+
+	}
+
+	last_value = avg/sum;
+
+	return last_value;
+}
+
+/*
+void readsens()
+{
+	unsigned char _maxValue = 2000;
+	unsigned char i;
+	unsigned char last_time;
+	unsigned char delta_time;
+	unsigned int time = 0;
+	
+	// reset the values
+	for(i = 0; i < num_sensor; i++)
+		sensor_values[i] = 0;
+		
+	unsigned char prevTCCR1A = TCCR1A;
+	unsigned char prevTCCR1B = TCCR1B;
+	TCCR1A |= 0x03;
+	TCCR1B = 0x02;		// run timer2 in normal mode at 2.5 MHz
+						// this is compatible with OrangutanMotors
+
+	last_time = TCNT1;
+	while (time < _maxValue)
+	{
+		// Keep track of the total time.
+		// This implicitly casts the difference to unsigned char, so
+		// we don't add negative values.
+		delta_time = TCNT2 - last_time;
+		time += delta_time;
+		last_time += delta_time;
+	}
+
+	TCCR1A = prevTCCR1A;
+	TCCR1B = prevTCCR1B;
+	for(i = 0; i < num_sensor; i++)
+		if (!sensor_values[i])
+			sensor_values[i] = _maxValue;
+			
+			
+	unsigned char j;
+	
+	// store current state of various registers
+	unsigned char admux = ADMUX;
+	unsigned char adcsra = ADCSRA;
+	unsigned char ddr = DDRC;
+	unsigned char port = PORTC;
+	
+	int _numSamplesPerSensor=10;
+
+	// wait for any current conversion to finish
+	while (ADCSRA & (1 << ADSC))
+	
+	// reset the values
+	for(i = 0; i < num_sensor; i++)
+		sensor_values[i] = 0;
+
+	// set all sensor pins to high-Z inputs
+//	ANALOG_DDR &= ~_portMask;
+//	ANALOG_PORT &= ~_portMask;
+
+	ADCSRA = 0x87;	// configure the ADC
+	for (j = 0; j < _numSamplesPerSensor; j++)
+	{
+		for (i = 0; i < num_sensor; i++)
+		{
+			ADMUX = (1<<6) | _analogPins[i];// set analog input channel
+			ADCSRA |= 1 << ADSC;			// start the conversion
+			while (ADCSRA & (1 << ADSC));	// wait for conversion to finish
+			sensor_values[i] += ADC;		// add in the conversion result
+		}
+	}
+	
+	// get the rounded average of the readings for each sensor
+	for (i = 0; i < num_sensor; i++)
+		sensor_values[i] = (sensor_values[i] + (_numSamplesPerSensor >> 1)) /
+			_numSamplesPerSensor;
+
+	ADMUX = admux;
+	ADCSRA = adcsra;
+	PORTC = port;
+	DDRC = ddr;
+}
+*/
+
