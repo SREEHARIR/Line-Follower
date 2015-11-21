@@ -201,3 +201,24 @@ void readsens()
 }
 */
 
+
+void readsens()
+{
+	int i;
+	//unsigned char last_time;
+	//unsigned char delta_time;
+	//unsigned int time = 0;
+	for(i = 0; i < num_sensor; i++)
+	{
+		sensor_values[i] = 0;	
+	}
+	sensor_values[0]=READ(C,0);
+	sensor_values[1]=READ(C,1);
+	sensor_values[2]=READ(C,2);
+	sensor_values[3]=READ(C,3);
+	sensor_values[4]=READ(C,4);
+	sensor_values[5]=READ(C,5);
+	sensor_values[6]=READ(B,4);
+	sensor_values[7]=READ(B,5);
+}
+
