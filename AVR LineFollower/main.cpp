@@ -276,3 +276,22 @@ void followPID()
 
 }
 
+int main(void)
+{
+	DDRB=0x0F;
+	DDRC=0x00;
+	DDRD=0xFF;
+	init_motors();
+	while(1)
+	{
+		followPID();
+		
+	//	for(int i=-250;i<250;i++)
+		{	
+	//		motors(i,i);
+	//		_delay_ms(10);
+		}
+	
+	
+	}
+}
