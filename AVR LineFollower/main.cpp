@@ -16,6 +16,7 @@ int num_sensor = 8;
 
 #define leftMotorPWMPin		OCR1B
 #define rightMotorPWMPin	OCR1A
+
 void init_motors()
 {
 	//Configure PWM pins OC1B and OC1A to output mode
@@ -71,6 +72,7 @@ void motors(int leftMotorSpeed, int rightMotorSpeed)
 		//PORTB = 0b00001000;
     }
 }
+
 
 int read_line()
 {
@@ -201,7 +203,6 @@ void readsens()
 }
 */
 
-
 void readsens()
 {
 	int i;
@@ -221,6 +222,7 @@ void readsens()
 	sensor_values[6]=READ(B,4);
 	sensor_values[7]=READ(B,5);
 }
+
 
 float KP = 3 ,KI = 50000 , KD = 16/1;
 int   integral  = 0;
