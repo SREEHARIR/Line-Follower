@@ -16,3 +16,22 @@ int result;
 int speedl;
 int speedr;
 int diff;
+
+/*Functions*/
+void drive();
+
+void setup() {
+  for (i = 0; i < 8; i++)
+  {
+    pinMode(sensor[i], INPUT);
+  }
+  pinMode(mlp, OUTPUT);
+  pinMode(mln, OUTPUT);
+  pinMode(mrp, OUTPUT);
+  pinMode(mrn, OUTPUT);
+  pinMode(el, OUTPUT);
+  pinMode(er, OUTPUT);
+
+  //Serial.begin(9600);
+}
+
