@@ -35,3 +35,34 @@ void setup() {
   //Serial.begin(9600);
 }
 
+void motors()
+{
+  if (speedl > 255.0/2)
+  {
+    digitalWrite(mlp, 1);
+    digitalWrite(mln, 0);
+    analogWrite(el, speedl);
+  }
+  else
+  {
+    digitalWrite(mlp, 0);
+    digitalWrite(mln, 1);
+    speedl = (255/2) * speedl;
+    analogWrite(el, speedl);
+  }
+  if (speedr > 255.0/2)
+  {
+    digitalWrite(mrp, 1);
+    digitalWrite(mrn, 0);
+    analogWrite(er, speedr);
+
+  }
+  else
+  {
+    digitalWrite(mrp, 0);
+    digitalWrite(mrn, 1);
+    speedr = (255/2) + speedr;
+    analogWrite(er, speedr);
+  }
+
+}
