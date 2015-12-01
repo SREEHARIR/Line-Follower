@@ -66,3 +66,61 @@ void motors()
   }
 
 }
+/*
+--------------------------------------------------------------------------------------------------------------------
+*/
+float KP = 1.0 ;
+float KI = 0.00002 ;
+float KD = 16 / 1.0;
+int   integral  = 0;
+int   last_proportional = 0;
+
+void followPID()
+{
+  int pos = read_line();
+
+  int center = (( (num_sensor - 1) * 100) / 2);
+
+  int proportional = pos - center;
+
+  int derivative = proportional - last_proportional;
+
+  int power_difference = proportional * KP + integral * KI + derivative * KD;
+  last_proportional    = proportional;
+  integral  += proportional;
+
+
+  const int max = 255;
+  const int max_diffrence = 500;
+  const int factor_diffrence = 2;
+
+  if (power_difference >= max)
+    power_difference = max;
+  if (power_difference < -max)
+    power_difference = -max;
+
+
+  // if diffrence is too much robot skids
+  if (power_difference > 0)
+  {
+     speedl  = max;
+     speedr = max - power_difference;
+  }
+  else if (power_difference < 0)
+  {
+    speedl  = max + power_difference;
+    speedr = max;
+  }
+
+  //
+  //    if(leftMotorSpeed - rightMotorSpeed > max_diffrence)
+  //    {
+  //        leftMotorSpeed -= (leftMotorSpeed - rightMotorSpeed)/factor_diffrence;
+  //    }
+  //    else if(rightMotorSpeed - leftMotorSpeed > max_diffrence)
+  //    {
+  //        rightMotorSpeed -= (rightMotorSpeed - leftMotorSpeed)/factor_diffrence;
+  //    }
+  motors();
+
+}
