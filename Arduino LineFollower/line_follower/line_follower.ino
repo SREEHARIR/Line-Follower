@@ -35,6 +35,65 @@ void setup() {
   //Serial.begin(9600);
 }
 
+void loop() {
+
+  //for(i=0;i<256;i++)
+  //{
+  //  speedr=i;
+  //  speedl=i;
+  //  drive();
+  //  Serial.println(i);
+  //  delay(100);
+  //}
+
+
+  //  for (i = 0; i < 8; i++)
+  //  {
+  //    s[i] = digitalRead(sensor[i]);
+  //    Serial.print(i);
+  //    Serial.print(" = ");
+  //    Serial.println(s[i]);
+  //  }
+  //  for(i=6;i<8;i++)
+  //  {
+  //  s[i]=analogRead(sensor[i]);
+  //    if(s[i]>300)
+  //    s[i]=1;
+  //    else
+  //    s[i]=0;
+  //    Serial.print(i);
+  //    Serial.print(" = ");
+  //    Serial.println(s[i]);
+  //  }
+  //  Serial.println();
+  //  delay(1000);
+  //  result = 0;
+  //  for (i = 0; i < 8; i++)
+  //  {
+  //    result += w[i] * s[i];
+  //  }
+  //  diff = 2 * (255 * result) / 7;
+  //  speedl = 255;
+  //  speedr = 255;
+  //  if (diff > 0)
+  //  {
+  //    speedl -= diff;
+  //  }
+  //  else
+  //  {
+  //    speedr += diff;
+  //  }
+  //  if (speedl < -255)
+  //  {
+  //    speedl = -255;
+  //  }
+  //  if (speedr < -255)
+  //  {
+  //    speedr = -255;
+  //  }
+  //  drive();
+  followPID();
+}
 void motors()
 {
   if (speedl > 255.0/2)
@@ -124,6 +183,7 @@ void followPID()
   motors();
 
 }
+
 int read_line()
 {
   unsigned char i, on_line = 0;
