@@ -124,3 +124,79 @@ void followPID()
   motors();
 
 }
+int read_line()
+{
+  unsigned char i, on_line = 0;
+  unsigned long avg; // this is for the weighted total, which is long before division
+  unsigned int sum; // this is for the denominator which is <= 64000
+  static int last_value = 0; // assume initially that the line is left.
+
+  readsens();
+
+  avg = 0;
+  sum = 0;
+
+  for (i = 0; i < num_sensor; i++)
+  {
+    int value = !sensor_values[i];
+
+    // keep track of whether we see the line at all
+    if (value == 1)
+    {
+      on_line = 1;
+    }
+
+    // only average in values that are above a noise threshold
+    if (1)
+    {
+      avg += (value) * (i * 100);
+      sum += value;
+    }
+  }
+
+  if (!on_line)
+  {
+    // If it last read to the left of center, return 0.
+    if (last_value < (num_sensor-1)*100/2)
+      return 0;
+
+    // If it last read to the right of center, return the max.
+    else
+      return (num_sensor-1)*100;
+
+  }
+
+  last_value = avg / sum;
+
+  return last_value;
+}
+
+void readsens()
+{
+  int i;
+  //unsigned char last_time;
+  //unsigned char delta_time;
+  //unsigned int time = 0;
+  for (i = 0; i < num_sensor; i++)
+  {
+    sensor_values[i] = 0;
+  }
+
+  for (i = 0; i < num_sensor; i++)
+  {
+    sensor_values[i] = digitalRead(sensor[i]);
+  }
+  
+  //  for(i=6;i<8;i++)
+  //  {
+  //  sensor_values[i] = digitalRead(sensor[i]);
+  //    if(s[i]>300)
+  //    s[i]=1;
+  //    else
+  //    s[i]=0;
+  //    Serial.print(i);
+  //    Serial.print(" = ");
+  //    Serial.println(s[i]);
+  //  }
+  
+}
